@@ -1,0 +1,45 @@
+{
+  "manifest_version": 3,
+  "name": "Български правопис (BG Spellcheck & Fix)",
+  "version": "1.0.0",
+  "description": "Проверка на правописа на български език (собствен Hunspell речник) + автоматично коригиране на текст: премахване на многоточия, поправка на IP адреси и главни букви за имена.",
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": ["storage", "activeTab", "scripting", "contextMenus"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.bundle.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle",
+      "all_frames": true
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["dict/bg.aff", "dict/bg.dic"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "commands": {
+    "fix-active-field": {
+      "suggested_key": { "default": "Ctrl+Shift+Y", "mac": "Command+Shift+Y" },
+      "description": "Поправи текста в текущото поле (BG spellcheck fix)"
+    }
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  }
+}

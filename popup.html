@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+<meta charset="UTF-8" />
+<title>Български правопис</title>
+<link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <header>
+    <h1>Български правопис</h1>
+  </header>
+
+  <main>
+    <button id="fixNowBtn" class="primary-btn">Поправи текущото поле</button>
+
+    <section class="toggles">
+      <label class="switch-row">
+        <span>Разрешено разширението</span>
+        <input type="checkbox" id="enabled" />
+      </label>
+      <label class="switch-row">
+        <span>Проверка на правописа (BG речник)</span>
+        <input type="checkbox" id="spellcheckEnabled" />
+      </label>
+      <label class="switch-row">
+        <span>Автоматична поправка при излизане от полето</span>
+        <input type="checkbox" id="autoFixOnBlur" />
+      </label>
+    </section>
+
+    <section class="toggles">
+      <h2>Правила за поправка</h2>
+      <label class="switch-row">
+        <span>Многоточие "..." → "."</span>
+        <input type="checkbox" id="fixEllipsis" />
+      </label>
+      <label class="switch-row">
+        <span>IP адрес с запетаи → с точки (192,168,0,1 → 192.168.0.1)</span>
+        <input type="checkbox" id="fixIpCommas" />
+      </label>
+      <label class="switch-row">
+        <span>Главна буква в началото на изречение</span>
+        <input type="checkbox" id="capitalizeSentences" />
+      </label>
+      <label class="switch-row">
+        <span>Главна буква за имена от списъка</span>
+        <input type="checkbox" id="capitalizeNames" />
+      </label>
+    </section>
+
+    <section>
+      <h2>Списък с имена (главна буква)</h2>
+      <div class="chip-list" id="namesList"></div>
+      <div class="add-row">
+        <input type="text" id="newName" placeholder="напр. Иван" />
+        <button id="addNameBtn">Добави</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>Собствени правила (замяна)</h2>
+      <div id="customRulesList"></div>
+      <div class="add-row rule-row">
+        <input type="text" id="ruleFind" placeholder="Търси" />
+        <input type="text" id="ruleReplace" placeholder="Замени с" />
+        <button id="addRuleBtn">Добави</button>
+      </div>
+    </section>
+
+    <p class="hint">
+      Съвет: щракни върху подчертана дума в текстово поле, за да видиш предложения.
+      Може и десен бутон → "Поправи текста".
+    </p>
+  </main>
+
+  <script src="popup.js"></script>
+</body>
+</html>
