@@ -1160,9 +1160,6 @@
     "wordSpacing",
     "tabSize"
   ];
-  function escapeHtml(str) {
-    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  }
   var SpellOverlay = class {
     constructor(field) {
       this.field = field;
@@ -1210,20 +1207,26 @@
     }
     /** matches: array of { index, length } sorted by index */
     render(text, matches) {
-      if (!matches || matches.length === 0) {
-        this.mirror.innerHTML = "";
-        return;
-      }
-      let html = "";
+      this.mirror.textContent = "";
+      if (!matches || matches.length === 0) return;
+      const frag = document.createDocumentFragment();
       let cursor = 0;
       for (const m of matches) {
-        html += escapeHtml(text.slice(cursor, m.index));
+        if (m.index > cursor) {
+          frag.appendChild(document.createTextNode(text.slice(cursor, m.index)));
+        }
         const word = text.slice(m.index, m.index + m.length);
-        html += `<span class="bg-spell-error">${escapeHtml(word)}</span>`;
+        const span = document.createElement("span");
+        span.className = "bg-spell-error";
+        span.textContent = word;
+        frag.appendChild(span);
         cursor = m.index + m.length;
       }
-      html += escapeHtml(text.slice(cursor));
-      this.mirror.innerHTML = html + "&nbsp;";
+      if (cursor < text.length) {
+        frag.appendChild(document.createTextNode(text.slice(cursor)));
+      }
+      frag.appendChild(document.createTextNode("\xA0"));
+      this.mirror.appendChild(frag);
       this._syncScroll();
     }
     show() {

@@ -30,7 +30,9 @@ function renderNames() {
   settings.namesList.forEach((name, i) => {
     const chip = document.createElement("span");
     chip.className = "chip";
-    chip.innerHTML = `<span>${name}</span>`;
+    const nameSpan = document.createElement("span");
+    nameSpan.textContent = name;
+    chip.appendChild(nameSpan);
     const removeBtn = document.createElement("button");
     removeBtn.textContent = "×";
     removeBtn.addEventListener("click", () => {
