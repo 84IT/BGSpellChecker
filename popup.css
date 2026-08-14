@@ -1,7 +1,7 @@
 * { box-sizing: border-box; }
 
 body {
-  width: 340px;
+  width: 400px;
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
   color: #1a1a1f;
@@ -24,6 +24,7 @@ main {
   padding: 14px 16px 18px;
   max-height: 520px;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .primary-btn {
@@ -114,7 +115,20 @@ h2 {
   cursor: pointer;
 }
 
-.rule-row { margin-top: 6px; }
+.rule-row {
+  margin-top: 6px;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.rule-row input {
+  width: 100%;
+}
+
+.rule-row button {
+  width: 100%;
+  padding: 8px 10px;
+}
 
 .rule-item {
   display: flex;
