@@ -1098,14 +1098,18 @@
   var knownWordsAdded = /* @__PURE__ */ new Set();
   function addKnownWords(speller, words) {
     for (const raw of words || []) {
-      const w = (raw || "").trim();
-      if (!w || knownWordsAdded.has(w)) continue;
-      knownWordsAdded.add(w);
-      speller.add(w);
-      const lower = w.toLowerCase();
-      if (lower !== w && !knownWordsAdded.has(lower)) {
-        knownWordsAdded.add(lower);
-        speller.add(lower);
+      const phrase = (raw || "").trim();
+      if (!phrase) continue;
+      const parts = phrase.split(/\s+/);
+      for (const w of parts) {
+        if (!w || knownWordsAdded.has(w)) continue;
+        knownWordsAdded.add(w);
+        speller.add(w);
+        const lower = w.toLowerCase();
+        if (lower !== w && !knownWordsAdded.has(lower)) {
+          knownWordsAdded.add(lower);
+          speller.add(lower);
+        }
       }
     }
   }
