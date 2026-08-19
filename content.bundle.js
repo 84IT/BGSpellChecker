@@ -1094,6 +1094,21 @@
   // src/spellchecker.js
   var import_nspell = __toESM(require_lib());
   var spellerPromise = null;
+  var spellerInstance = null;
+  var knownWordsAdded = /* @__PURE__ */ new Set();
+  function addKnownWords(speller, words) {
+    for (const raw of words || []) {
+      const w = (raw || "").trim();
+      if (!w || knownWordsAdded.has(w)) continue;
+      knownWordsAdded.add(w);
+      speller.add(w);
+      const lower = w.toLowerCase();
+      if (lower !== w && !knownWordsAdded.has(lower)) {
+        knownWordsAdded.add(lower);
+        speller.add(lower);
+      }
+    }
+  }
   function getSpeller() {
     if (!spellerPromise) {
       spellerPromise = (async () => {
@@ -1103,7 +1118,10 @@
           fetch(affUrl).then((r) => r.text()),
           fetch(dicUrl).then((r) => r.text())
         ]);
-        return (0, import_nspell.default)(aff, dic);
+        const speller = (0, import_nspell.default)(aff, dic);
+        addKnownWords(speller, settings.namesList);
+        spellerInstance = speller;
+        return speller;
       })();
     }
     return spellerPromise;
@@ -1463,6 +1481,9 @@
     if (area !== "sync") return;
     for (const key of Object.keys(changes)) {
       settings[key] = changes[key].newValue;
+    }
+    if (changes.namesList && spellerInstance) {
+      addKnownWords(spellerInstance, changes.namesList.newValue);
     }
   });
   chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
