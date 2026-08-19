@@ -1415,14 +1415,40 @@
     const nodes = root.querySelectorAll('input, textarea, [contenteditable=""], [contenteditable="true"]');
     nodes.forEach(wireField);
   }
+  // Pending nodes get queued here instead of being scanned synchronously
+  // inside the MutationObserver callback. On pages that mutate the DOM
+  // heavily during load (hydration, ads, infinite scroll), the observer
+  // can otherwise fire dozens/hundreds of times per second, each doing a
+  // querySelectorAll walk - that's what caused the load-time stutter.
+  var pendingNodes = /* @__PURE__ */ new Set();
+  var flushScheduled = false;
+  function flushPendingNodes() {
+    flushScheduled = false;
+    const nodes = pendingNodes;
+    pendingNodes = /* @__PURE__ */ new Set();
+    for (const node of nodes) {
+      if (!node.isConnected) continue;
+      if (isTextField(node) || isContentEditable(node)) wireField(node);
+      scanForFields(node);
+    }
+  }
+  function scheduleFlush() {
+    if (flushScheduled) return;
+    flushScheduled = true;
+    if (typeof requestIdleCallback === "function") {
+      requestIdleCallback(flushPendingNodes, { timeout: 500 });
+    } else {
+      setTimeout(flushPendingNodes, 150);
+    }
+  }
   var observer = new MutationObserver((mutations) => {
     for (const m of mutations) {
       m.addedNodes.forEach((node) => {
         if (node.nodeType !== 1) return;
-        if (isTextField(node) || isContentEditable(node)) wireField(node);
-        scanForFields(node);
+        pendingNodes.add(node);
       });
     }
+    if (pendingNodes.size) scheduleFlush();
   });
   function init() {
     scanForFields();
