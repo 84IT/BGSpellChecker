@@ -1274,14 +1274,26 @@
     "search",
     "email",
     "url",
-    "tel",
-    null,
-    ""
+    "tel"
   ]);
+  var SENSITIVE_INPUT_TYPES = /* @__PURE__ */ new Set([
+    "password",
+    "hidden"
+  ]);
+  function isInPasswordForm(el) {
+    const form = el.form || (el.closest ? el.closest("form") : null);
+    if (!form) return false;
+    return !!form.querySelector('input[type="password" i]');
+  }
   function isTextField(el) {
     if (!el) return false;
+    if (isInPasswordForm(el)) return false;
     if (el.tagName === "TEXTAREA") return true;
-    if (el.tagName === "INPUT") return TEXTY_INPUT_TYPES.has(el.getAttribute("type"));
+    if (el.tagName === "INPUT") {
+      const t = (el.type || "text").toLowerCase();
+      if (SENSITIVE_INPUT_TYPES.has(t)) return false;
+      return TEXTY_INPUT_TYPES.has(t);
+    }
     return false;
   }
   function isContentEditable(el) {
