@@ -1034,8 +1034,8 @@
     return text.replace(/(\.{2,}|\u2026+)/g, ".");
   }
   function fixIpCommas(text) {
-    const ipCommaPattern = /\b(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\b/g;
-    return text.replace(ipCommaPattern, (match, a, b, c, d) => {
+    const ipMixedPattern = /\b(\d{1,3})\s*[.,]\s*(\d{1,3})\s*[.,]\s*(\d{1,3})\s*[.,]\s*(\d{1,3})\b/g;
+    return text.replace(ipMixedPattern, (match, a, b, c, d) => {
       const octets = [a, b, c, d];
       if (octets.every((o) => Number(o) <= 255)) {
         return octets.join(".");
